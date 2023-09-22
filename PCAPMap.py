@@ -3,7 +3,7 @@ from tkinter import filedialog
 from scapy.all import *
 import networkx as nx
 from bokeh.io import output_file, show
-from bokeh.models import Plot, Range1d, MultiLine, Circle, HoverTool, BoxZoomTool, ResetTool
+from bokeh.models import Plot, Range1d, MultiLine, Circle, HoverTool, BoxZoomTool, ResetTool, LabelSet, ColumnDataSource
 from bokeh.plotting import from_networkx
 from bokeh.palettes import Spectral4
 import webbrowser
@@ -55,6 +55,21 @@ class PCAPAnalyzer(tk.Tk):
 
         plot.add_tools(HoverTool(tooltips=None), BoxZoomTool(), ResetTool())
 
+
+        source = ColumnDataSource(data=dict(
+            x=[pos[0] for pos in pos.values()],
+            y=[pos[1] for pos in pos.values()],
+            label=list(G.nodes())
+        ))
+
+        # Create a LabelSet with the labels from the ColumnDataSource
+        labels = LabelSet(x='x', y='y', text='label', source=source,
+                  text_font_size='10pt', x_offset=5, y_offset=5)
+
+
+        # Add the labels to the plot
+        plot.add_layout(labels)
+        
         output_file("network.html")
         show(plot)  # This will save the plot to network.html and open it in the web browser
 
