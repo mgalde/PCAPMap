@@ -14,6 +14,8 @@ Ensure you have the following installed on your machine:
 - NetworkX
 - Bokeh
 
+![image](https://github.com/mgalde/PCAPMap/assets/30883926/4cc093b4-f750-448e-80f5-d23099a8de84)
+
 You can install the necessary libraries using pip:
 
 ```bash
@@ -34,6 +36,13 @@ pip install scapy networkx bokeh
 4. The network map will be displayed in a new browser tab.
 5. Optionally, click on the "Save Network Map" button to save the network map to an HTML file.
 6. Click on the "Exit" button to close the application.
+
+![image](https://github.com/mgalde/PCAPMap/assets/30883926/e377bad0-70e9-4ff4-afeb-d675c8dfb3ce)
+
+
+
+![image](https://github.com/mgalde/PCAPMap/assets/30883926/0ec7b546-99e7-46fd-a0ab-ec27c538b989)
+
 
 ## Limitations
 
