@@ -1,11 +1,12 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 from scapy.all import *
 import networkx as nx
 from bokeh.io import output_file, show
 from bokeh.models import Plot, Range1d, MultiLine, Circle, HoverTool, BoxZoomTool, ResetTool, LabelSet, ColumnDataSource
 from bokeh.plotting import from_networkx
 from bokeh.palettes import Spectral4
+from bokeh.layouts import layout
 import webbrowser
 
 class PCAPAnalyzer(tk.Tk):
@@ -27,7 +28,12 @@ class PCAPAnalyzer(tk.Tk):
             self.generate_button.config(state=tk.NORMAL)
 
     def generate_map(self):
-        pcap = rdpcap(self.pcap_path)
+        try:
+            pcap = rdpcap(self.pcap_path)
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to read PCAP file: {e}")
+            return
+
         G = nx.DiGraph()
 
         for packet in pcap:
@@ -44,8 +50,8 @@ class PCAPAnalyzer(tk.Tk):
         pos = nx.spring_layout(G, k=0.15, iterations=20)
         pos_relabeled = {mapping[node]: pos[node] for node in pos}
 
-        plot = Plot(width=400, height=400,
-                    x_range=Range1d(-1.1, 1.1), y_range=Range1d(-1.1, 1.1))
+        plot = Plot(width=1920, height=1080,  # Adjust these values to your desired size
+                x_range=Range1d(-1.1, 1.1), y_range=Range1d(-1.1, 1.1))
         plot.title.text = "Network Map"
 
         graph_renderer = from_networkx(G_relabeled, pos_relabeled, scale=1, center=(0, 0))
@@ -70,8 +76,10 @@ class PCAPAnalyzer(tk.Tk):
         # Add the labels to the plot
         plot.add_layout(labels)
         
+        plot_layout = layout([plot])
+
         output_file("network.html")
-        show(plot)  # This will save the plot to network.html and open it in the web browser
+        show(plot_layout)  # This will save the plot to network.html and open it in the web browser
 
         self.save_button = tk.Button(self, text="Save Network Map", command=lambda: self.save_map(plot))
         self.save_button.pack(pady=20)
@@ -79,8 +87,11 @@ class PCAPAnalyzer(tk.Tk):
     def save_map(self, plot):
         file_path = filedialog.asksaveasfilename(defaultextension=".html", filetypes=[("HTML Files", "*.html")])
         if file_path:
-            output_file(file_path)
-            show(plot)
+            try:
+                output_file(file_path)
+                show(plot)
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to save network map: {e}")
 
 if __name__ == "__main__":
     app = PCAPAnalyzer()
