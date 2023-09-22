@@ -21,6 +21,10 @@ class PCAPAnalyzer(tk.Tk):
 
         self.generate_button = tk.Button(self, text="Generate Network Map", command=self.generate_map, state=tk.DISABLED)
         self.generate_button.pack(pady=20)
+        
+        self.exit_button = tk.Button(self, text="Exit", command=self.destroy)  # Exit button
+        self.exit_button.pack(pady=20)  # Adjust padding as needed
+
 
     def open_pcap(self):
         self.pcap_path = filedialog.askopenfilename(title="Select PCAP File", filetypes=[("PCAP Files", "*.pcap;*.pcapng")])
